@@ -21,7 +21,7 @@ export default function Board() {
   function handleClick(i: number) {
     const nextSquares = squares.slice();
 
-    if (squares[i] != "") {
+    if (squares[i] != "" || calculateWinner(squares) != "") {
       return;
     }
     
@@ -35,8 +35,19 @@ export default function Board() {
     setXIsNext(!xIsNext);
   }
 
+  const winner = calculateWinner(squares);
+  let status: string;
+  if (winner != "" && winner != "draw") {
+    status = "Winner: " + winner;
+  } else if (winner == "draw") {
+    status = "It's a " + winner;
+  } else {
+    status = "Next player: " + (xIsNext ? 'X' : 'O');
+  }
+
   return (
   <>
+    <div className=' pb-2 font-semibold'>{ status }</div>
     <div className="flex h-10">
       <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
       <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
@@ -54,4 +65,32 @@ export default function Board() {
     </div>
   </>
   );
+}
+
+function calculateWinner(squares: Array<string>): string {
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+  ];
+
+  for (let i = 0; i < lines.length; i++) {
+    const [a, b, c] = lines[i];
+    if (squares[a] != "" && squares[a] == squares[b] && squares[a] == squares[c]) {
+      return squares[a];
+    }
+  }
+
+  for (let i = 0; i < squares.length; i++) {
+    if (squares[i] == "") {
+      return "";
+    }
+  }
+
+  return "draw";
 }
