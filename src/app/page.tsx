@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 
-function Square({ value, onSquareClick }): JSX.Element {
+function Square({ value, onSquareClick, winner }): JSX.Element {
   return (
     <button 
-    className="border-black border w-24 h-24 font-extrabold text-4xl"
+    className={"border-black border w-24 h-24 font-extrabold text-4xl" + (winner ? ' text-red-600' : ' bg-transparent')}
     onClick={onSquareClick}
     title='TicTacToe Cell'
     >
@@ -15,11 +15,11 @@ function Square({ value, onSquareClick }): JSX.Element {
 }
 
 function Board({ xIsNext, squares, onPlay }) {
-
   function handleClick(i: number) {
     const nextSquares = squares.slice();
-
-    if (squares[i] != "" || calculateWinner(squares) != "") {
+    const winnerSquares = calculateWinner(squares);
+    
+    if (squares[i] != "" || winnerSquares[0] != 10) {
       return;
     }
     
@@ -32,20 +32,28 @@ function Board({ xIsNext, squares, onPlay }) {
     onPlay(nextSquares);
   }
 
-  const winner = calculateWinner(squares);
+  const winnerSquares = calculateWinner(squares);
   let status: string;
-  if (winner != "" && winner != "draw") {
-    status = "Winner: " + winner;
-  } else if (winner == "draw") {
-    status = "It's a " + winner;
-  } else {
+  if (winnerSquares[0] != 10 && winnerSquares[0] != 20) {
+    status = "Winner: " + squares[winnerSquares[0]];
+  } else if (winnerSquares[0] == 10) {
     status = "Next player: " + (xIsNext ? 'X' : 'O');
+  } else {
+    status = "It's a draw";
   }
 
   const boardSquares = squares.map((square: string, index: number) => {
-      return (
-        <Square key={index} value={square} onSquareClick={() => handleClick(index)}/>
-      )
+    let winner = false;
+
+    for (let i = 0; i < winnerSquares.length; i++) {
+      if (index == winnerSquares[i]) {
+        winner = true;
+      }
+    }
+
+    return (
+      <Square key={index} value={square} onSquareClick={() => handleClick(index)} winner={winner} />
+    )
   })
 
   return (
@@ -77,11 +85,13 @@ export default function Game() {
   
   const moves = history.map((squares, move) => {
     let description: string;
-    if (move > 0) {
-      description = "Go to move #" + move;
+
+    if (move == currentMove) {
+      move > 0 ? description = "You are at move #" + move : description = "You are at game start";
     } else {
-      description = "Go to game start";
+      move > 0 ? description = "Go to move #" + move : description = "Go to game start";
     }
+
     return (
       <li key={ move }>
         <button className=' bg-slate-300 p-2 rounded-md' onClick={() => jumpTo(move)}>{ description }</button>
@@ -101,7 +111,7 @@ export default function Game() {
   );
 }
 
-function calculateWinner(squares: Array<string>): string {
+function calculateWinner(squares: Array<string>): Array<number> {
   const lines = [
     [0, 1, 2],
     [3, 4, 5],
@@ -116,15 +126,15 @@ function calculateWinner(squares: Array<string>): string {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] != "" && squares[a] == squares[b] && squares[a] == squares[c]) {
-      return squares[a];
+      return lines[i];
     }
   }
 
   for (let i = 0; i < squares.length; i++) {
     if (squares[i] == "") {
-      return "";
+      return [10];
     }
   }
 
-  return "draw";
+  return [20];
 }
