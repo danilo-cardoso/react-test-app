@@ -5,7 +5,7 @@ import { useState } from 'react';
 function Square({ value, onSquareClick }): JSX.Element {
   return (
     <button 
-    className="border-black border w-10 h-10 font-extrabold"
+    className="border-black border w-24 h-24 font-extrabold text-4xl"
     onClick={onSquareClick}
     title='TicTacToe Cell'
     >
@@ -49,12 +49,12 @@ function Board({ xIsNext, squares, onPlay }) {
   })
 
   return (
-  <>
+  <div className='flex flex-col items-center gap-2'>
     <div className=' pb-2 font-semibold'>{ status }</div>
-    <div className=" grid-cols-3 grid-rows-3 inline-grid h-auto">
+    <div className=" grid-cols-3 grid-rows-3 inline-grid h-auto border border-black">
       { boardSquares }
     </div>
-  </>
+  </div>
   );
 }
 
@@ -84,18 +84,18 @@ export default function Game() {
     }
     return (
       <li key={ move }>
-        <button onClick={() => jumpTo(move)}>{ description }</button>
+        <button className=' bg-slate-300 p-2 rounded-md' onClick={() => jumpTo(move)}>{ description }</button>
       </li>
     );
   });
 
   return (
-    <div className='game'>
+    <div className='game bg-slate-200 flex justify-evenly w-1/2 rounded-lg p-6'>
       <div className='game-board'>
         <Board xIsNext={ xIsNext } squares={ currentSquares } onPlay={ handlePlay } />
       </div>
-      <div className='game-info'>
-        <ol>{ moves }</ol>
+      <div className='game-info font-bold'>
+        <ol className='flex flex-col justify-center items-start gap-2'>{ moves }</ol>
       </div>
     </div>
   );
