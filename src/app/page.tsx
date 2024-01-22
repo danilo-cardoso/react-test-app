@@ -2,7 +2,19 @@
 
 import { useState } from 'react';
 
-function Square({ value, onSquareClick, winner }): JSX.Element {
+interface SquareProps {
+  value: string,
+  onSquareClick: any,
+  winner: boolean
+}
+
+interface BoardProps {
+  xIsNext: boolean,
+  squares: string[],
+  onPlay: any,
+}
+
+function Square({ value, onSquareClick, winner }: SquareProps): JSX.Element {
   return (
     <button 
     className={"border-black border w-24 h-24 font-extrabold text-4xl" + (winner ? ' text-red-600' : ' bg-transparent')}
@@ -14,7 +26,7 @@ function Square({ value, onSquareClick, winner }): JSX.Element {
   );
 }
 
-function Board({ xIsNext, squares, onPlay }) {
+function Board({ xIsNext, squares, onPlay }: BoardProps) {
   function handleClick(i: number) {
     const nextSquares = squares.slice();
     const winnerSquares = calculateWinner(squares);

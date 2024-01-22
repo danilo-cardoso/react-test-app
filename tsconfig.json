@@ -5,7 +5,6 @@
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
-    "noImplicitAny": false,
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "node",
@@ -19,8 +18,7 @@
         "name": "next"
       }
     ],
-    "paths": {
-      "@/*": ["./src/*"]
+    "paths": { "@/*": ["./src/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
